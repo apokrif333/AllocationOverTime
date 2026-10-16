@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rates>
+    <generator>Alternate RSS Builder</generator>
+    <title>Official exchange rates of National Bank of Republic Kazakhstan</title>
+    <link>www.nationalbank.kz</link>
+    <description>Official exchange rates of National Bank of Republic Kazakhstan</description>
+    <copyright>www.nationalbank.kz</copyright>
+    <date>09.10.2026</date>
+
+                        <item>
+            <fullname>АВСТРАЛИЙСКИЙ ДОЛЛАР</fullname>
+            <title>AUD</title>
+            <description>311.7</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.62</change>
+            </item>
+                    <item>
+            <fullname>АЗЕРБАЙДЖАНСКИЙ МАНАТ</fullname>
+            <title>AZN</title>
+            <description>264.86</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+1.06</change>
+            </item>
+                    <item>
+            <fullname>АРМЯНСКИЙ ДРАМ</fullname>
+            <title>AMD</title>
+            <description>12.47</description>
+            <quant>10</quant>
+            <index>DOWN</index>
+            <change>-0.02</change>
+            </item>
+                    <item>
+            <fullname>БЕЛОРУССКИЙ РУБЛЬ</fullname>
+            <title>BYN</title>
+            <description>147.02</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.98</change>
+            </item>
+                    <item>
+            <fullname>БРАЗИЛЬСКИЙ РЕАЛ</fullname>
+            <title>BRL</title>
+            <description>89.41</description>
+            <quant>1</quant>
+            <index>DOWN</index>
+            <change>-0.33</change>
+            </item>
+                    <item>
+            <fullname>ВЕНГЕРСКИХ ФОРИНТОВ</fullname>
+            <title>HUF</title>
+            <description>13.7</description>
+            <quant>10</quant>
+            <index>UP</index>
+            <change>+0.06</change>
+            </item>
+                    <item>
+            <fullname>ВЬЕТНАМСКИЙ ДОНГ</fullname>
+            <title>VND</title>
+            <description>17.34</description>
+            <quant>1000</quant>
+            <index>UP</index>
+            <change>+0.13</change>
+            </item>
+                    <item>
+            <fullname>ГОНКОНГСКИЙ ДОЛЛАР</fullname>
+            <title>HKD</title>
+            <description>57.21</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.23</change>
+            </item>
+                    <item>
+            <fullname>ГРУЗИНСКИЙ ЛАРИ</fullname>
+            <title>GEL</title>
+            <description>175.03</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.64</change>
+            </item>
+                    <item>
+            <fullname>ДАТСКАЯ КРОНА</fullname>
+            <title>DKK</title>
+            <description>67.18</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.23</change>
+            </item>
+                    <item>
+            <fullname>ДИРХАМ ОАЭ</fullname>
+            <title>AED</title>
+            <description>122.24</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.49</change>
+            </item>
+                    <item>
+            <fullname>ДОЛЛАР США</fullname>
+            <title>USD</title>
+            <description>448.94</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+1.80</change>
+            </item>
+                    <item>
+            <fullname>ЕВРО</fullname>
+            <title>EUR</title>
+            <description>502.05</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+1.70</change>
+            </item>
+                    <item>
+            <fullname>ЕГИПЕТСКИЙ ФУНТ</fullname>
+            <title>EGP</title>
+            <description>8.58</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.04</change>
+            </item>
+                    <item>
+            <fullname>ИЗРАИЛЬСКИЙ ШЕКЕЛЬ</fullname>
+            <title>ILS</title>
+            <description>145.76</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.04</change>
+            </item>
+                    <item>
+            <fullname>ИНДИЙСКАЯ РУПИЯ</fullname>
+            <title>INR</title>
+            <description>4.64</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.02</change>
+            </item>
+                    <item>
+            <fullname>ИНДОНЕЗИЙСКАЯ РУПИЯ</fullname>
+            <title>IDR</title>
+            <description>25.09</description>
+            <quant>1000</quant>
+            <index>UP</index>
+            <change>+0.08</change>
+            </item>
+                    <item>
+            <fullname>ИРАНСКИЙ РИАЛ</fullname>
+            <title>IRR</title>
+            <description>2.54</description>
+            <quant>10000</quant>
+            <index>DOWN</index>
+            <change>-0.06</change>
+            </item>
+                    <item>
+            <fullname>КАНАДСКИЙ ДОЛЛАР</fullname>
+            <title>CAD</title>
+            <description>314.89</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.62</change>
+            </item>
+                    <item>
+            <fullname>КАТАРСКИЙ РИАЛ</fullname>
+            <title>QAR</title>
+            <description>123.17</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.50</change>
+            </item>
+                    <item>
+            <fullname>КИТАЙСКИЙ ЮАНЬ</fullname>
+            <title>CNY</title>
+            <description>66.98</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.29</change>
+            </item>
+                    <item>
+            <fullname>КУВЕЙТСКИЙ ДИНАР</fullname>
+            <title>KWD</title>
+            <description>1457.12</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+5.84</change>
+            </item>
+                    <item>
+            <fullname>КЫРГЫЗСКИЙ СОМ</fullname>
+            <title>KGS</title>
+            <description>5.13</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.02</change>
+            </item>
+                    <item>
+            <fullname>МАЛАЗИЙСКИЙ РИНГГИТ</fullname>
+            <title>MYR</title>
+            <description>109.82</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.39</change>
+            </item>
+                    <item>
+            <fullname>МЕКСИКАНСКИЙ ПЕСО</fullname>
+            <title>MXN</title>
+            <description>24.89</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.16</change>
+            </item>
+                    <item>
+            <fullname>МОЛДАВСКИЙ ЛЕЙ</fullname>
+            <title>MDL</title>
+            <description>25.25</description>
+            <quant>1</quant>
+            <index>DOWN</index>
+            <change>-0.01</change>
+            </item>
+                    <item>
+            <fullname>МОНГОЛЬСКИЙ ТУГРИК</fullname>
+            <title>MNT</title>
+            <description>12.49</description>
+            <quant>100</quant>
+            <index>UP</index>
+            <change>+0.05</change>
+            </item>
+                    <item>
+            <fullname>НОРВЕЖСКАЯ КРОНА</fullname>
+            <title>NOK</title>
+            <description>46.89</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.16</change>
+            </item>
+                    <item>
+            <fullname>ОМАНСКИЙ РИАЛ</fullname>
+            <title>OMR</title>
+            <description>1166.17</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+4.68</change>
+            </item>
+                    <item>
+            <fullname>ПАКИСТАНСКАЯ РУПИЯ</fullname>
+            <title>PKR</title>
+            <description>1.62</description>
+            <quant>1</quant>
+            <index></index>
+            <change>0.00</change>
+            </item>
+                    <item>
+            <fullname>ПОЛЬСКИЙ ЗЛОТЫЙ</fullname>
+            <title>PLN</title>
+            <description>114.67</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.48</change>
+            </item>
+                    <item>
+            <fullname>РИЯЛ САУДОВСКОЙ АРАВИИ</fullname>
+            <title>SAR</title>
+            <description>119.58</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.46</change>
+            </item>
+                    <item>
+            <fullname>РОССИЙСКИЙ РУБЛЬ</fullname>
+            <title>RUB</title>
+            <description>5.26</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.02</change>
+            </item>
+                    <item>
+            <fullname>РУМЫНСКИЙ ЛЕЙ</fullname>
+            <title>RON</title>
+            <description>93.98</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.45</change>
+            </item>
+                    <item>
+            <fullname>СДР</fullname>
+            <title>XDR</title>
+            <description>607.05</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+1.36</change>
+            </item>
+                    <item>
+            <fullname>СИНГАПУРСКИЙ ДОЛЛАР</fullname>
+            <title>SGD</title>
+            <description>350.21</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.88</change>
+            </item>
+                    <item>
+            <fullname>ТАДЖИКСКИЙ СОМОНИ</fullname>
+            <title>TJS</title>
+            <description>48.96</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.36</change>
+            </item>
+                    <item>
+            <fullname>ТАЙСКИЙ БАТ</fullname>
+            <title>THB</title>
+            <description>13.33</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.06</change>
+            </item>
+                    <item>
+            <fullname>ТУРЕЦКАЯ ЛИРА</fullname>
+            <title>TRY</title>
+            <description>9.12</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.03</change>
+            </item>
+                    <item>
+            <fullname>УЗБЕКСКИХ СУМОВ</fullname>
+            <title>UZS</title>
+            <description>3.8</description>
+            <quant>100</quant>
+            <index></index>
+            <change>0.00</change>
+            </item>
+                    <item>
+            <fullname>УКРАИНСКАЯ ГРИВНА</fullname>
+            <title>UAH</title>
+            <description>10</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.03</change>
+            </item>
+                    <item>
+            <fullname>ФУНТ СТЕРЛИНГОВ СОЕДИНЕННОГО КОРОЛЕВСТВА</fullname>
+            <title>GBP</title>
+            <description>592.69</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+1.88</change>
+            </item>
+                    <item>
+            <fullname>ЧЕШСКАЯ КРОНА</fullname>
+            <title>CZK</title>
+            <description>20.58</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.09</change>
+            </item>
+                    <item>
+            <fullname>ШВЕДСКАЯ КРОНА</fullname>
+            <title>SEK</title>
+            <description>44.8</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.25</change>
+            </item>
+                    <item>
+            <fullname>ШВЕЙЦАРСКИЙ ФРАНК</fullname>
+            <title>CHF</title>
+            <description>538.68</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+1.51</change>
+            </item>
+                    <item>
+            <fullname>ЮЖНО-АФРИКАНСКИЙ РАНД</fullname>
+            <title>ZAR</title>
+            <description>26.91</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.09</change>
+            </item>
+                    <item>
+            <fullname>ЮЖНО-КОРЕЙСКИХ ВОН</fullname>
+            <title>KRW</title>
+            <description>33.38</description>
+            <quant>100</quant>
+            <index>DOWN</index>
+            <change>-0.03</change>
+            </item>
+                    <item>
+            <fullname>ЯПОНСКАЯ ЙЕНА</fullname>
+            <title>JPY</title>
+            <description>2.84</description>
+            <quant>1</quant>
+            <index>UP</index>
+            <change>+0.02</change>
+            </item>
+            </rates>

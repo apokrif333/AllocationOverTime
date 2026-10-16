@@ -1,0 +1,149 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Historical portfolio allocation</title><style>
+:root{font:14px system-ui,sans-serif;color:#172a3e;background:#f3f6f9}*{box-sizing:border-box}body{margin:0}header{background:#122b42;color:white;padding:24px 30px}h1{font-size:25px;font-weight:650;margin:0 0 8px}h2{font-size:18px}p{margin:7px 0;line-height:1.5}.sub{color:#bcd1e3}.layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:18px;padding:20px}aside,.panel{background:white;border:1px solid #dce4eb;border-radius:8px;padding:16px}aside{align-self:start;position:sticky;top:12px}label{display:block;font-weight:600;margin:10px 0 5px}input,select,button{font:inherit;border:1px solid #aebfcd;border-radius:4px;padding:7px;background:white;color:#172a3e}input[type=search],select{width:100%}button{cursor:pointer}button:hover{background:#e8f0f7}.controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.checklist{height:380px;overflow:auto;border-top:1px solid #e3e9ee;margin-top:10px}.checklist label{font-size:12px;font-weight:400;display:flex;gap:6px;align-items:flex-start;padding:6px;margin:0;line-height:1.4}.checklist input{margin-top:3px}.muted{color:#516778;font-size:12px}.badge{background:#e8f0f7;border-radius:4px;padding:3px 6px}.warning{background:#fff3db;border-left:4px solid #bd7200;padding:12px 16px;margin-bottom:16px;line-height:1.55}.error{background:#ffebeb;border-color:#b22e37}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}.card{background:#edf3f8;padding:12px;border-radius:6px}.card span{display:block;font-size:12px;color:#526979}.card strong{display:block;font-size:21px;margin-top:7px}.chart{height:620px}.liability{height:135px}main{min-width:0}.panel{margin-bottom:16px}.table-scroll{overflow:auto;max-height:480px}table{border-collapse:collapse;width:100%;font-size:12px;text-align:left}th{position:sticky;top:0;background:#eaf0f5;white-space:nowrap}td,th{padding:8px;border-bottom:1px solid #e3e9ee}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}.swatch{display:inline-block;width:11px;height:11px;margin-right:6px;border:1px solid #53617155}.details{white-space:pre-wrap;max-height:220px;overflow:auto;font-size:12px;line-height:1.6}.datecontrol{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}input[type=range]{width:100%}.hidden{display:none}summary{cursor:pointer}a{color:#1767a2}#dateStatus{font-weight:600;margin-top:10px}#native{overflow-wrap:anywhere}.help{font-size:12px;line-height:1.6}.status-warning{color:#9a4d00}.status-blocking,.status-error{color:#a91b28}@media(max-width:1000px){.layout{grid-template-columns:210px minmax(0,1fr);padding:10px;gap:10px}.cards{grid-template-columns:repeat(2,1fr)}.chart{height:530px}}@media(max-width:700px){.layout{display:block}aside{position:static;margin-bottom:12px}.checklist{height:150px}.chart{height:500px}header{padding:18px}.card strong{font-size:18px}}
+.table-sort{font:inherit;font-weight:inherit;color:inherit;background:transparent;border:0;border-radius:0;padding:0;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.table-sort:hover{background:transparent;color:#1767a2}.table-sort:focus-visible{outline:2px solid #1767a2;outline-offset:3px}.sort-arrow{font-size:12px;color:#607b90}th[aria-sort=ascending] .sort-arrow,th[aria-sort=descending] .sort-arrow{color:#1767a2}
+</style><script>__PLOTLY_JS__</script></head><body>
+<header><h1>Historical portfolio allocation</h1><p class="sub">Historical FIFO acquisition capital in USD. Cash included. This is not market-value allocation, NAV, or broker margin.</p><p id="coverage" class="sub"></p></header>
+<div class="layout"><aside>
+<label for="mode">Display mode</label><select id="mode"><option value="individual">Individual securities</option><option value="classes">Asset classes</option></select>
+<label for="search">Search securities</label><input id="search" type="search" placeholder="Name, symbol or ISIN" autocomplete="off">
+<div class="controls" style="margin-top:8px"><button id="all">All</button><button id="none">None</button><button id="matches">Only matches</button></div>
+<p class="muted" id="selectionCount"></p><div class="checklist" id="selector" aria-label="Select instruments"></div>
+<label for="highlight">Highlight</label><select id="highlight"><option value="">No highlight</option></select>
+<p class="help">Filters and legend clicks keep the full portfolio denominator. A filtered chart can total less than 100%. Double-click a legend entry to isolate it.</p>
+<button id="export">Export full time series CSV</button>
+<details style="margin-top:15px"><summary>Accounting conventions</summary><div class="help" id="method"></div></details>
+</aside><main>
+<div id="quality" class="warning"></div>
+<div class="panel"><div class="controls"><h2 style="margin:0 12px 0 0">Capital allocation</h2><button data-range="6">6 months</button><button data-range="12">1 year</button><button data-range="all">All history</button><button id="reset">Reset filters</button></div>
+<div id="chartError" role="alert" class="warning error" hidden></div><div id="chart" class="chart"></div><div id="allocationHover" role="tooltip" hidden style="position:fixed;z-index:1000;pointer-events:none;background:white;color:#172a3e;border:1px solid #b8c6d2;border-left:4px solid #1767a2;border-radius:5px;padding:10px 12px;box-shadow:0 3px 14px #172a3e26;max-width:360px;font-size:13px;line-height:1.6"></div>
+<p class="muted">Steps show the state after each event group. Gaps indicate unavailable allocation. Rates change native cash valuations; security USD cost stays fixed between relevant transactions.</p>
+<div id="liability" class="liability" aria-label="Borrowing history"></div>
+<div class="datecontrol"><input id="dateSlider" type="range" min="0" aria-label="Select event date"><input id="date" type="date" aria-label="Select calendar date"></div>
+<p id="dateStatus"></p>
+<div class="cards"><div class="card"><span>Total signed cash (USD)</span><strong id="cashValue"></strong></div><div class="card"><span>Estimated reserved collateral</span><strong id="reservedValue"></strong></div><div class="card"><span id="borrowingLabel">Borrowing (USD)</span><strong id="borrowingValue"></strong></div><div class="card"><span>Accounting denominator (USD)</span><strong id="denomValue"></strong></div></div>
+<p id="native" class="muted"></p><div id="dateWarning" class="warning hidden"></div>
+<h2>Allocation at selected date</h2><p class="muted" id="tableSummary"></p><div class="table-scroll"><table><thead><tr>
+<th id="sort-header-instrument" aria-sort="none"><button type="button" id="sort-instrument" class="table-sort">Instrument <span id="sort-arrow-instrument" class="sort-arrow" aria-hidden="true">↕</span></button></th>
+<th id="sort-header-isin" aria-sort="none"><button type="button" id="sort-isin" class="table-sort">ISIN <span id="sort-arrow-isin" class="sort-arrow" aria-hidden="true">↕</span></button></th>
+<th id="sort-header-class" aria-sort="none"><button type="button" id="sort-class" class="table-sort">Class <span id="sort-arrow-class" class="sort-arrow" aria-hidden="true">↕</span></button></th>
+<th id="sort-header-quantity" class="num" aria-sort="none"><button type="button" id="sort-quantity" class="table-sort">Quantity <span id="sort-arrow-quantity" class="sort-arrow" aria-hidden="true">↕</span></button></th>
+<th id="sort-header-capital" class="num" aria-sort="descending"><button type="button" id="sort-capital" class="table-sort">Capital USD <span id="sort-arrow-capital" class="sort-arrow" aria-hidden="true">↓</span></button></th>
+<th id="sort-header-weight" class="num" aria-sort="none"><button type="button" id="sort-weight" class="table-sort">Weight <span id="sort-arrow-weight" class="sort-arrow" aria-hidden="true">↕</span></button></th>
+<th id="sort-header-status" aria-sort="none"><button type="button" id="sort-status" class="table-sort">Basis / collateral status <span id="sort-arrow-status" class="sort-arrow" aria-hidden="true">↕</span></button></th>
+</tr></thead><tbody id="allocationTable"></tbody></table></div>
+<details open style="margin-top:16px"><summary>Events and source records at selected timestamp</summary><div id="events" class="details"></div></details>
+<details style="margin-top:12px"><summary>FX observations used at selected date</summary><div id="fx" class="details"></div></details>
+</div>
+<div class="panel" id="profitPanel"><div class="controls"><h2 style="margin:0 12px 0 0">Накопленная реализованная прибыль</h2><label for="profitCurrency" style="margin:0">Валюта</label><select id="profitCurrency" style="width:auto" aria-label="Profit display currency"></select><button id="exportProfit">CSV</button><strong id="profitTotal" style="font-size:23px"></strong></div>
+<p class="muted" id="profitMethod"></p><div id="profitWarning" class="warning" hidden></div>
+<div id="profitChart" style="height:400px"></div>
+<p id="profitSelected" class="muted"></p><p id="profitNative" class="muted"></p><details><summary>FX</summary><div id="profitRates" class="details"></div></details><div class="table-scroll" style="max-height:310px"><table><thead><tr><th>Источник прибыли</th><th class="num" id="profitAmountHeader">Currency</th></tr></thead><tbody id="profitBreakdown"></tbody></table></div>
+<details style="margin-top:12px"><summary>Доходы и расходы на выбранную дату</summary><div id="profitEvents" class="details"></div></details>
+</div>
+<div class="panel"><h2>Reconciliation and data quality</h2><p>Comparisons do not create cash adjustments. Position snapshots are derived audit lots; original broker audit findings are listed separately.</p><div class="controls"><label for="severity">Show</label><select id="severity" style="width:auto"><option value="issues">Warnings and errors</option><option value="all">All checks</option><option value="cash_balance">Cash comparisons</option><option value="position_quantity">Position comparisons</option></select><span class="muted" id="reportCount"></span></div>
+<div class="table-scroll" style="margin-top:12px"><table><thead><tr><th>Severity / check</th><th>Date / identifier</th><th class="num">Reconstructed</th><th class="num">Reported</th><th class="num">Difference</th><th class="num">Relative</th><th>Evidence and possible cause</th></tr></thead><tbody id="reconTable"></tbody></table></div>
+<p class="muted" id="provenance"></p></div>
+</main></div>
+<script id="portfolio-data" type="application/json">__DATA_JSON__</script><script>
+'use strict';
+const P=JSON.parse(document.getElementById('portfolio-data').textContent), S=P.states, I=P.instruments;
+const keys=[...Object.keys(I).sort(),'Cash'], selected=new Set(keys), byId=id=>document.getElementById(id);
+const money=x=>x==null?'Unavailable':new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:2}).format(x);
+const number=x=>x==null?'—':Number(x).toLocaleString('en-US',{maximumFractionDigits:6});
+const title=k=>I[k]?.name||'Cash', isin=k=>I[k]?.isin||'', color=k=>P.colors[k]||'#929ca8';
+const category=(k,s)=>k==='Cash'?'Cash':s.quantities[k]<0&&I[k]?.is_option?'Short-option collateral':I[k]?.asset_class||'Other';
+// Plotly uses uid in CSS selectors when traces are removed/replaced. Business
+// keys contain colons, spaces and slashes; encode them without collisions.
+const traceUid=key=>'allocation_'+Array.from(key,c=>c.codePointAt(0).toString(16).padStart(6,'0')).join('');
+const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Plotly dates represent workbook wall-clock values, without an account timezone.
+const chartTime=value=>typeof value==='number'?value:Date.parse(String(value).trim().replace(' ','T').replace(/Z$/,'')+'Z');
+const eventTimes=S.map(s=>chartTime(s.timestamp));
+function indexAt(value){const at=chartTime(value);if(!Number.isFinite(at)||at<eventTimes[0]||at>eventTimes.at(-1))return -1;let lo=0,hi=eventTimes.length;while(lo<hi){const mid=(lo+hi)>>>1;if(eventTimes[mid]<=at)lo=mid+1;else hi=mid;}return lo-1;}
+let index=S.length-1,range=null,plotReady=false;
+const allocationColumnTypes={instrument:'text',isin:'text',class:'text',quantity:'number',capital:'number',weight:'number',status:'text'};
+let allocationSort={column:'capital',direction:'desc'};
+function allocationValue(key,state,column){switch(column){case 'instrument':return title(key);case 'isin':return isin(key);case 'class':return category(key,state);case 'quantity':return key==='Cash'?null:state.quantities[key];case 'capital':return state.amounts[key];case 'weight':return state.weights[key];case 'status':return state.basis_status[key];}}
+function renderAllocationTable(state=S[index]){
+const {column,direction}=allocationSort,numeric=allocationColumnTypes[column]==='number',sign=direction==='asc'?1:-1;
+const missing=value=>value==null||value===''||(numeric&&!Number.isFinite(value));
+const ordered=keys.filter(k=>(state.quantities[k]||0)!==0||(state.amounts[k]||0)>0||k==='Cash').sort((a,b)=>{
+const av=allocationValue(a,state,column),bv=allocationValue(b,state,column),am=missing(av),bm=missing(bv);
+if(am!==bm)return am?1:-1;
+const comparison=am?0:numeric?av-bv:String(av).localeCompare(String(bv),'en',{numeric:true,sensitivity:'base'});
+return sign*comparison||title(a).localeCompare(title(b),'en',{numeric:true,sensitivity:'base'})||a.localeCompare(b);
+});
+byId('allocationTable').innerHTML=ordered.map(k=>`<tr data-key="${esc(k)}" style="opacity:${selected.has(k)?1:.45}"><td><span class="swatch" style="background:${color(k)}"></span>${esc(title(k))}</td><td>${esc(isin(k))}</td><td>${esc(category(k,state))}</td><td class="num">${number(state.quantities[k])}</td><td class="num">${money(state.amounts[k])}</td><td class="num">${state.weights[k]==null?'Unavailable':state.weights[k].toFixed(6)+'%'}</td><td>${esc(state.basis_status[k])}</td></tr>`).join('');
+for(const key of Object.keys(allocationColumnTypes)){const active=key===column;byId('sort-header-'+key).setAttribute('aria-sort',active?(direction==='asc'?'ascending':'descending'):'none');byId('sort-arrow-'+key).textContent=active?(direction==='asc'?'↑':'↓'):'↕';}
+}
+for(const [column,type] of Object.entries(allocationColumnTypes))byId('sort-'+column).onclick=()=>{
+allocationSort={column,direction:allocationSort.column===column?(allocationSort.direction==='asc'?'desc':'asc'):(type==='number'?'desc':'asc')};renderAllocationTable();};
+byId('coverage').textContent=`${S[0].timestamp.slice(0,10)} – ${S.at(-1).timestamp.slice(0,10)} · ${keys.length-1} instruments · ${S.length} event states`;
+byId('method').textContent=P.metadata.methodology;
+byId('provenance').textContent=`Source SHA-256: ${P.metadata.input_sha256}. ${P.metadata.run_options}`;
+const invalid=S.filter(s=>!s.valid).length, blocking=P.reconciliation.filter(r=>r.severity==='blocking'), issues=P.reconciliation.filter(r=>r.severity!=='info');
+const cashChecks=P.reconciliation.filter(r=>r.category==='cash_balance'&&Math.abs(r.difference||0)>.05);
+const fundingGap=P.reconciliation.some(r=>r.category==='cash_funding_history_missing');
+if(fundingGap)byId('borrowingLabel').textContent='Negative reconstructed cash (USD)';
+const quality=byId('quality');quality.classList.toggle('error',invalid>0||blocking.length>0);
+quality.textContent=`${invalid?'Allocation unavailable in '+invalid+' states. ':''}${issues.length} accounting warnings/errors are disclosed below. ${cashChecks.length} cash checkpoints differ by more than 0.05 native units. ${cashChecks.length?'Latest difference: '+number(cashChecks.at(-1).difference)+' '+cashChecks.at(-1).currency+' on '+cashChecks.at(-1).date+'. ':''}${P.metadata.basis_disclosure} ${S.some(s=>(s.borrowing||0)>0)?(fundingGap?'Cash funding history is missing. Negative reconstructed cash is not verified broker borrowing; affected allocations show positive gross capital.':'Borrowing occurs in this history: affected chart states show positive gross capital, not net account equity.'):''}`;
+const names=keys.slice().sort((a,b)=>title(a).localeCompare(title(b)));
+for(const k of names){const option=document.createElement('option');option.value=k;option.textContent=title(k);byId('highlight').append(option);}
+function matches(){let q=byId('search').value.toLowerCase().trim();return names.filter(k=>[title(k),isin(k),I[k]?.symbol||''].join(' ').toLowerCase().includes(q));}
+function selector(){const root=byId('selector');root.replaceChildren();for(const k of matches()){const label=document.createElement('label'),cb=document.createElement('input'),text=document.createElement('span');cb.type='checkbox';cb.checked=selected.has(k);cb.value=k;cb.setAttribute('aria-label',title(k));cb.onchange=()=>{cb.checked?selected.add(k):selected.delete(k);draw();};text.textContent=title(k)+(isin(k)?' · '+isin(k):'');label.append(cb,text);root.append(label);}byId('selectionCount').textContent=`${selected.size} of ${keys.length} components selected`;}
+function traceSeries(){const mode=byId('mode').value,highlight=byId('highlight').value,buckets=new Map();
+for(const k of keys){if(!selected.has(k))continue;if(mode==='individual'){buckets.set(k,[k]);}else{const classes=new Set(S.map(s=>category(k,s)));for(const c of classes){let id='CLASS:'+c;if(!buckets.has(id))buckets.set(id,[]);if(!buckets.get(id).includes(k))buckets.get(id).push(k);}}}
+return [...buckets].map(([id,members])=>{const individual=mode==='individual',name=individual?title(id):id.slice(6),values=[],custom=[];
+for(const s of S){let amount=0,weight=0,unknown=!s.valid;for(const k of members){if(!individual&&'CLASS:'+category(k,s)!==id)continue;const a=s.amounts[k],w=s.weights[k];if(a==null||w==null)unknown=true;else{amount+=a;weight+=w;}}values.push(unknown?null:weight);custom.push([unknown?null:amount,unknown?null:weight,individual?isin(id):'',individual?s.basis_status[id]:'']);}
+const emphasized=!highlight||members.includes(highlight),rgba=color(id),opacity=emphasized?1:.16;
+return {type:'scatter',mode:'lines',name:name,uid:traceUid(id),meta:{key:id,members},x:S.map(s=>s.timestamp),y:values,customdata:custom,stackgroup:'capital',line:{color:rgba,width:emphasized?0.8:0.4,shape:'hv'},fill:'tonexty',opacity,connectgaps:false,hoverinfo:'skip'};});}
+// Select the nonzero band under the cursor, not the nearest cumulative line.
+// Closed instruments keep their accounting zeros but cannot capture a tooltip.
+function hoverAt(time,percentage,traces=byId('chart').data||traceSeries()){
+const stateIndex=indexAt(time);if(stateIndex<0||!S[stateIndex].valid||!Number.isFinite(percentage)||percentage<0||percentage>100)return null;
+const y=percentage===100?100-1e-10:percentage;let bottom=0;
+for(const trace of traces){if(trace.visible===false||trace.visible==='legendonly')continue;const weight=trace.y[stateIndex];if(weight==null||weight<=0)continue;const top=bottom+weight;if(y>=bottom&&y<top)return {trace,stateIndex,time,values:trace.customdata[stateIndex]};bottom=top;}
+return null;}
+function hoverMarkup(hit){if(!hit)return '';const [amount,weight,identifier,status]=hit.values;
+const short=hit.trace.meta.key==='CLASS:Short-option collateral'||hit.trace.meta.members.some(k=>I[k]?.is_option&&S[hit.stateIndex].quantities[k]<0);
+const cash=hit.trace.meta.key==='Cash'||hit.trace.meta.key==='CLASS:Cash';
+const label=cash?'Свободные деньги':short?'Зарезервировано':'Вложено';
+return `<b>${esc(hit.trace.name)}</b>${identifier?'<br>'+esc(identifier):''}<br>${new Date(chartTime(hit.time)).toISOString().slice(0,10)}<br><b>${label}: ${money(amount)}</b><br>Доля: ${weight.toLocaleString('ru-RU',{maximumFractionDigits:6})}%${status==='inferred'?'<br><span class="muted">Себестоимость оценена по данным отчёта</span>':''}${short?'<br><span class="muted">Расчётное денежное обеспечение</span>':''}`;}
+function hideHover(){byId('allocationHover').hidden=true;}
+function showHover(event){const hit=hoverAt(event.xvals?.[0],event.yvals?.[0]);if(!hit){hideHover();return;}
+const tooltip=byId('allocationHover'),rect=byId('chart').getBoundingClientRect();tooltip.innerHTML=hoverMarkup(hit);tooltip.style.borderLeftColor=color(hit.trace.meta.key);tooltip.hidden=false;
+let left=rect.left+event.xPixel+15,top=rect.top+event.yPixel+15;
+if(left+tooltip.offsetWidth>window.innerWidth-8)left=rect.left+event.xPixel-tooltip.offsetWidth-15;
+if(top+tooltip.offsetHeight>window.innerHeight-8)top=rect.top+event.yPixel-tooltip.offsetHeight-15;
+tooltip.style.left=Math.max(8,left)+'px';tooltip.style.top=Math.max(8,top)+'px';}
+function layout(){return {margin:{l:58,r:20,t:130,b:32},paper_bgcolor:'white',plot_bgcolor:'#fafcfe',font:{family:'system-ui',size:12,color:'#233b50'},xaxis:{type:'date',range:range||undefined,rangeslider:{visible:true,thickness:.075},showgrid:true,gridcolor:'#e7edf3'},yaxis:{title:{text:'Allocation of complete portfolio'},range:[0,100],ticksuffix:'%',dtick:20,gridcolor:'#dce5ed'},legend:{orientation:'h',y:1.04,yanchor:'bottom',x:0,font:{size:10},maxheight:.15},hovermode:'closest',hoveranywhere:true,clickanywhere:true,dragmode:'zoom',uirevision:'portfolio',shapes:[{type:'line',x0:S[index].timestamp,x1:S[index].timestamp,y0:0,y1:100,line:{color:'#173f64',width:1,dash:'dot'}}]};}
+async function draw(){hideHover();selector();byId('chartError').hidden=true;
+try{await Plotly.react('chart',traceSeries(),layout(),{responsive:true,displaylogo:false,scrollZoom:true,toImageButtonOptions:{filename:'historical_cost_allocation'}});
+if(!plotReady){byId('chart').on('plotly_hover',showHover);byId('chart').on('plotly_unhover',hideHover);byId('chart').on('plotly_click',event=>{const at=indexAt(event.xvals?.[0]??event.points?.[0]?.x);if(at>=0){index=at;showDate();}});byId('chart').on('plotly_relayout',event=>{hideHover();if(event['xaxis.range[0]'])range=[event['xaxis.range[0]'],event['xaxis.range[1]']];});byId('chart').addEventListener('pointerleave',hideHover);plotReady=true;}
+showDate(false);
+}catch(error){byId('chartError').textContent='Не удалось обновить график: '+String(error.message||error);byId('chartError').hidden=false;}}
+function showDate(updateLine=true){let s=S[index];byId('dateSlider').value=index;byId('date').value=s.timestamp.slice(0,10);byId('dateStatus').textContent=`${s.timestamp.replace('T',' ')} · ${s.valid?'Allocation available':'Allocation unavailable — missing accounting inputs'}${s.borrowing>0?' · Positive gross capital view':''}`;
+showProfitDate(index);
+byId('cashValue').textContent=money(s.total_cash);byId('reservedValue').textContent=money(s.reserved);byId('borrowingValue').textContent=money(s.borrowing);byId('denomValue').textContent=money(s.denominator);
+byId('native').textContent=`Native cash: ${Object.entries(s.native_cash).map(([c,v])=>c+' '+number(v)).join(' · ')}. Free cash USD: ${money(s.free_cash)}. Net historical-cost capital: ${money(s.net_capital)} (not NAV).`;
+byId('dateWarning').classList.toggle('hidden',!s.warnings.length);byId('dateWarning').textContent=s.warnings.join(' · ');
+renderAllocationTable(s);
+let visible=keys.filter(k=>selected.has(k)).reduce((a,k)=>a+(s.weights[k]||0),0);byId('tableSummary').textContent=`All portfolio holdings are shown in this table. Selected components: ${s.valid?visible.toFixed(6)+'%':'unavailable'}. Full portfolio: ${s.valid?Object.values(s.weights).reduce((a,b)=>a+b,0).toFixed(6)+'%':'unavailable'}.`;
+byId('events').textContent=s.events.map(e=>e.details+'\nSource: '+(e.sources.join(', ')||'checkpoint')).join('\n\n');byId('fx').textContent=Object.entries(s.fx_used).map(([c,r])=>`${c}: ${r.rate} USD per unit\nRequested ${r.requested_date}, observation ${r.rate_date}, source ${r.source}\n${r.url||''}`).join('\n\n');
+if(updateLine&&plotReady)Plotly.relayout('chart',{'shapes[0].x0':s.timestamp,'shapes[0].x1':s.timestamp});}
+function report(){let choice=byId('severity').value,rows=P.reconciliation.filter(r=>choice==='all'||choice==='issues'&&r.severity!=='info'||r.category===choice);byId('reportCount').textContent=rows.length+' records';byId('reconTable').innerHTML=rows.map(r=>`<tr><td class="status-${esc(r.severity)}">${esc(r.severity)}<br>${esc(r.category)}</td><td>${esc(r.date)}<br>${esc(r.instrument_key)} ${esc(r.currency)}</td><td class="num">${number(r.reconstructed)}</td><td class="num">${number(r.reported)}</td><td class="num">${number(r.difference)}</td><td class="num">${r.relative_difference==null?'—':(100*r.relative_difference).toFixed(4)+'%'}</td><td>${esc(r.possible_cause)}<details><summary>Source records</summary>${esc(r.sources)}</details></td></tr>`).join('');}
+byId('search').oninput=selector;byId('mode').onchange=draw;byId('highlight').onchange=draw;byId('severity').onchange=report;
+byId('all').onclick=()=>{keys.forEach(k=>selected.add(k));draw();};byId('none').onclick=()=>{selected.clear();draw();};byId('matches').onclick=()=>{selected.clear();matches().forEach(k=>selected.add(k));draw();};byId('reset').onclick=()=>{selected.clear();keys.forEach(k=>selected.add(k));byId('search').value='';byId('highlight').value='';range=null;draw();Plotly.relayout('chart',{'xaxis.autorange':true});};
+byId('dateSlider').max=S.length-1;byId('dateSlider').oninput=e=>{index=Number(e.target.value);showDate();};byId('date').min=S[0].timestamp.slice(0,10);byId('date').max=S.at(-1).timestamp.slice(0,10);byId('date').onchange=e=>{const day=e.target.value;index=0;S.forEach((s,i)=>{if(s.timestamp.slice(0,10)<=day)index=i;});showDate();};
+document.querySelectorAll('[data-range]').forEach(button=>button.onclick=()=>{let end=new Date(S.at(-1).timestamp),start=new Date(end);if(button.dataset.range==='all')range=[S[0].timestamp,S.at(-1).timestamp];else{start.setMonth(start.getMonth()-Number(button.dataset.range));range=[start.toISOString(),S.at(-1).timestamp];}Plotly.relayout('chart',{'xaxis.range':range});Plotly.relayout('liability',{'xaxis.range':range});Plotly.relayout('profitChart',{'xaxis.range':range});});
+const csvCell=x=>'"'+String(x??'').replaceAll('"','""')+'"';
+function exportRows(){const columns=['timestamp','instrument_key','name','isin','asset_class','quantity','invested_usd','weight_percent','basis_status','total_cash_usd','free_cash_usd','reserved_collateral_usd','borrowing_usd','accounting_denominator_usd','net_cost_capital_usd','allocation_valid','native_cash','fx_used','recent_event','event_sources'];const lines=[columns.map(csvCell).join(',')];for(const s of S)for(const k of keys)lines.push([s.timestamp,k,title(k),isin(k),category(k,s),s.quantities[k]||0,s.amounts[k],s.weights[k],s.basis_status[k],s.total_cash,s.free_cash,s.reserved,s.borrowing,s.denominator,s.net_capital,s.valid,JSON.stringify(s.native_cash),JSON.stringify(s.fx_used),s.last_events[k]||'',s.events.flatMap(e=>e.sources).join('; ')].map(csvCell).join(','));return '\uFEFF'+lines.join('\r\n');}
+byId('export').onclick=()=>{const url=URL.createObjectURL(new Blob([exportRows()],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='allocation_timeseries.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+Plotly.newPlot('liability',[{x:S.map(s=>s.timestamp),y:S.map(s=>s.borrowing),type:'scatter',mode:'lines',fill:'tozeroy',line:{shape:'hv',color:'#a92a38',width:1},hovertemplate:'%{x|%Y-%m-%d}<br>'+(fundingGap?'Unreconciled cash shortfall':'Borrowing')+' $%{y:,.2f}<extra></extra>'}],{margin:{l:65,r:20,t:22,b:25},height:135,title:{text:fundingGap?'Reconstructed cash shortfall - funding history missing (USD)':'Borrowing history (USD)',font:{size:12},x:.02},xaxis:{type:'date'},yaxis:{rangemode:'tozero'},showlegend:false},{responsive:true,displayModeBar:false});
+__PROFIT_JS__
+const initialProfit=drawProfit();
+const initialDraw=draw();report();
+// A read-only verification hook exposes the exact data used by the UI.
+window.portfolioDashboard={data:P,selected,traceSeries,exportRows,hoverAt,hoverMarkup,indexAt,ready:initialDraw,profitReady:initialProfit,exportProfitRows,getProfitCurrency:()=>profitCurrency,getIndex:()=>index};
+</script></body></html>

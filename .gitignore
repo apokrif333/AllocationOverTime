@@ -1,0 +1,26 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.idea/
+*.egg-info/
+.pytest-tmp*/
+.qa/*
+!.qa/package.json
+!.qa/package-lock.json
+
+# Private account inputs and generated financial reports
+/files/
+/output/
+/inspection.txt
+/PROFIT_AUDIT.md
+/fx_cache/instrument_colors.json
+~$*
+
+# Local credentials and build artifacts
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+/build/
+/dist/

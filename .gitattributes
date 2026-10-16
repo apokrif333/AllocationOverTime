@@ -1,0 +1,4 @@
+* text=auto
+
+# Preserve cached central-bank responses byte-for-byte for SHA-256 validation.
+fx_cache/** -text
